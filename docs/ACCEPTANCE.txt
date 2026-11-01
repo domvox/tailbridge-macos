@@ -1,0 +1,19 @@
+TailBridge source-only Experimental preview: evidence and limits, 2026-11-01
+
+Scope: a pre-publication development build with the same runtime sources as this snapshot, app 1.1.0 Experimental (2), one development Mac.
+This is a source preview for review, not a recommendation to use an ad-hoc binary for sensitive work.
+Fixtures and AI review are not an independent human security audit or a network-safety certification.
+
+Recorded automated evidence: Core 445, presentation 1127, manifest 14/14 and a 10,000-process soak; pre-publication CI passed. This separate public repository has not run CI yet. These were not rerun for this documentation update. Clean BUILDINFO identified that development commit and its matching helper; the signature is ad hoc, without Developer ID or notarization.
+
+The clean app was copied to Applications, and the matching helper installed through the standard app path. Over several status cycles the helper reported enabled PF, expected anchor order, exact owned rules/resolver and no cleanup/problems. The separate independent PF snapshot was taken before that installation. This does not establish full lifecycle coverage or prolonged stability.
+
+IPv4: observed HTTP 200 and strict mullvad_exit_ip=true. IPv6: Unavailable, without usable global connectivity, not a protection pass.
+DNS: one controlled IPv4 query/response observed on loopback and inside the Mullvad tunnel. No plaintext port-53 DNS captured on the active physical interface during that sample; zero kernel drops. This does not cover every application, DNS protocol or failure state.
+
+Lockdown: retain the automated Inconclusive result. The harness compared process-relative monotonic clocks from separate processes and misclassified their ordering. A manual, limited observation found curl 7 / HTTP 000 and no completed TCP connection for one pinned-endpoint IPv4 HTTPS attempt, with sampled Disconnected/Lockdown-on states before and after it. The endpoint worked with HTTP 200 and strict Mullvad true before and after reconnection. Local request/guard flow supports probe completion and the state check before the Connect request. No precise cross-process interval is claimed. State sampling is not continuous monitoring, and DNS capture did not observe HTTPS traffic. No real-IP HTTP response was observed during the blocked stage. This is not an actual unexpected tunnel-failure test.
+
+Final independent read: Connected, Lockdown off, matching helper and fresh status. Capture children and reconnect guard completed. Raw logs, PCAP, addresses, tailnet/device identifiers and private reports remain outside the repository.
+
+NOT VERIFIED: actual unexpected tunnel failure/fail-closed protection; IPv6 protection; sleep/network changes/reboot; every application/protocol, DoH/DoT; prolonged stability; complete Enable/Disable/uninstall/rollback of this helper; a second Mac; quarantined-download/Gatekeeper behavior; Developer ID/notarized distribution.
+The source repository is https://github.com/domvox/tailbridge-macos. Private vulnerability reporting is enabled; see SECURITY.md. These observations do not waive beta gates or certify leak-free behavior.

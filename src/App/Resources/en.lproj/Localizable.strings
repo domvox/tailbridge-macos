@@ -1,0 +1,268 @@
+/* TailBridge UI strings (English). To add a language, copy this file to <lang>.lproj and translate the values. */
+
+/* Window and menus */
+"window.subtitle" = "Mullvad + Tailscale";
+"menu.about" = "About TailBridge";
+"about.version" = "%@ %@";
+"about.commit" = "Commit %@";
+"about.commitModified" = "Commit %@ with uncommitted changes";
+"about.adhoc" = "Ad-hoc signature. No Developer ID, not notarized.";
+"about.unknown" = "unknown";
+"menu.hide" = "Hide TailBridge";
+"menu.hideOthers" = "Hide Others";
+"menu.showAll" = "Show All";
+"menu.quit" = "Quit TailBridge";
+"menu.edit" = "Edit";
+"menu.undo" = "Undo";
+"menu.redo" = "Redo";
+"menu.cut" = "Cut";
+"menu.copy" = "Copy";
+"menu.paste" = "Paste";
+"menu.selectAll" = "Select All";
+"menu.actions" = "Actions";
+"menu.enable" = "Enable TailBridge";
+"menu.disable" = "Disable TailBridge";
+"menu.window" = "Window";
+"menu.minimize" = "Minimize";
+"menu.close" = "Close";
+
+/* Actions */
+"action.enable" = "Enable";
+"action.disable" = "Disable";
+"action.cleanupHelp" = "Removes the changes TailBridge left behind. It never disconnects Mullvad.";
+"action.refresh" = "Refresh";
+"action.diagnostics" = "Run Diagnostics";
+"action.showLog" = "Show Log";
+
+/* Common */
+"common.checking" = "Checking…";
+"common.working" = "%@…";
+"common.updated" = "Updated %@";
+"common.yes" = "yes";
+"common.no" = "no";
+
+/* Status levels (spoken by VoiceOver next to icons) */
+"tone.ok" = "OK";
+"tone.warning" = "Needs attention";
+"tone.error" = "Problem";
+"tone.neutral" = "Not set";
+"tone.unknown" = "Unknown";
+"tone.info" = "Information";
+"notice.info" = "Information";
+
+/* Main status */
+"header.scope" = "TailBridge only adds a firewall exception so Tailscale works alongside Mullvad. It never connects or disconnects Mullvad.";
+"status.checking.title" = "Checking Status…";
+"status.checking.detail" = "Reading the state of Mullvad, Tailscale and the TailBridge helper.";
+"status.on.title" = "TailBridge Is On";
+"status.on.detail" = "Mullvad reports it’s connected, and TailBridge’s firewall exception for your Tailscale devices is in place. TailBridge doesn’t change where your other traffic goes. Run a connection test to check that your devices are reachable.";
+"status.onNoMullvad.detail" = "TailBridge’s firewall exception is in place, but Mullvad isn’t reported as connected, so TailBridge can’t confirm that your other traffic goes through Mullvad. Check the Mullvad app, or click Disable to remove the exception.";
+"status.onNoTailscale.detail" = "TailBridge’s firewall exception is in place, but Tailscale isn’t reported as running, so your devices may not be reachable. Connect Tailscale, or click Disable to remove the exception.";
+"status.off.title" = "TailBridge Is Off";
+"status.off.ready" = "While Mullvad is connected, it may block your Tailscale devices. Click Enable to allow them.";
+"status.off.needMullvad" = "Connect Mullvad first. TailBridge doesn’t connect it for you.";
+"status.off.needTailscale" = "Start Tailscale and sign in, then click Enable.";
+"status.off.needDomain" = "Tailscale didn’t report your tailnet name. Make sure MagicDNS is on in the Tailscale admin console, then click Refresh.";
+"status.off.needPF" = "The macOS packet filter (PF), which Mullvad uses, is turned off, so TailBridge can’t add its exception. Try reconnecting Mullvad, then click Refresh.";
+"status.off.pfUnreadable" = "TailBridge can’t read the firewall state, so Enable is unavailable. This doesn’t mean the firewall is off. Click Refresh in a moment; if this stays, reinstall the helper (Administration → Install Helper…, which restarts it), then run Diagnostics.";
+"status.off.needOrder" = "The firewall rules aren’t in the order TailBridge needs, so it won’t change them. Run Diagnostics and check the log.";
+"status.leftovers" = "Some earlier TailBridge changes are still in place. Click Disable to remove them.";
+"status.error.title" = "TailBridge Found a Problem";
+"status.error.detail" = "The firewall exception doesn’t match what TailBridge expects, and the helper is cleaning it up. Click Disable, then check the log if this persists.";
+"status.stale.title" = "TailBridge Needs Attention";
+"status.stale.detail" = "Tailscale’s connection changed since TailBridge was enabled, so the old exception is being removed. Click Disable to clear it, then Enable again.";
+"status.setup.title" = "Setup Needed";
+"status.setup.detail" = "Install the TailBridge helper under Administration below before enabling.";
+"status.unknown.title" = "Status Unknown";
+"status.unknown.detail" = "The TailBridge helper isn’t reporting, so its firewall exception may still be in place. Click Disable to remove it. If this continues, reinstall the helper under Administration.";
+
+/* Connections */
+"conn.title" = "Connections";
+"conn.mullvad" = "Mullvad VPN";
+"conn.tailscale" = "Tailscale";
+"mullvad.connected" = "Connected";
+"mullvad.disconnected" = "Disconnected";
+"mullvad.connecting" = "Connecting";
+"mullvad.blocked" = "Blocked";
+"mullvad.unavailable" = "Not available";
+"mullvad.unavailableHint" = "The Mullvad app wasn’t found or didn’t respond.";
+"mullvad.lockdownOn" = "Lockdown mode on";
+"mullvad.lockdownOff" = "Lockdown mode off";
+"mullvad.dnsFilterWarning" = "Mullvad’s DNS content blockers are on (%@). They use a DNS server with a 100.64.x.x address, in the range Tailscale uses for its devices, so while Tailscale is connected the two may conflict and websites may stop loading. If that happens, turn off the content blockers in Mullvad’s DNS settings or use a custom DNS server. TailBridge doesn’t change these settings.";
+"mullvad.lockdownHelp" = "Lockdown mode blocks internet traffic when Mullvad is disconnected. TailBridge never changes this setting.";
+"tailscale.connected" = "Connected";
+"tailscale.noInterface" = "Network interface not found";
+"tailscale.signedOut" = "Signed out";
+"tailscale.signInHint" = "Sign in from the Tailscale menu.";
+"tailscale.needsApproval" = "Waiting for approval";
+"tailscale.stopped" = "Stopped";
+"tailscale.startHint" = "Connect from the Tailscale menu.";
+"tailscale.starting" = "Starting";
+"tailscale.unavailable" = "Not available";
+"tailscale.unavailableHint" = "The Tailscale app wasn’t found or didn’t respond.";
+
+/* Technical Details */
+"tech.title" = "Technical Details";
+"tech.interface" = "Network interface";
+"tech.interfaceValue" = "%@ (index %ld)";
+"tech.interfaceMissing" = "No interface with Tailscale addresses";
+"tech.addresses" = "Tailscale addresses";
+"tech.helper" = "Helper";
+"tech.helperMissing" = "Not installed";
+"tech.helperRunning" = "Installed · monitor running (updated %ld s ago)";
+"tech.helperStale" = "Installed · monitor not responding";
+"tech.pf" = "Firewall exception (PF)";
+"tech.pfExact" = "Active · 4 rules on %@";
+"tech.pfEmpty" = "None";
+"tech.pfMismatch" = "Doesn’t match the expected rules";
+"tech.pfError" = "Couldn’t be read";
+"tech.pfUnreadable" = "can’t read the firewall state";
+"tech.pfOff" = "PF is turned off";
+"tech.pfOrder" = "rule order problem (com.apple/* not before mullvad)";
+"tech.needsMonitor" = "Unknown (needs the helper’s monitor)";
+"tech.resolver" = "MagicDNS resolver";
+"tech.resolverOurs" = "TailBridge → 100.100.100.100";
+"tech.resolverLegacy" = "Earlier prototype → 100.100.100.100";
+"tech.resolverNoDomain" = "Unknown (no tailnet domain)";
+"tech.env" = "Tailscale setting (env)";
+"tech.envOurs" = "Set by TailBridge (applies after Tailscale restarts)";
+"tech.envLegacy" = "Set by the earlier prototype";
+"tech.none" = "None";
+"tech.foreignFile" = "Unrecognized file (%@) — left untouched";
+"tech.legacy" = "Earlier prototype";
+"tech.legacyValue" = "Anchor: %@ · state file: %@";
+"tech.legacyNone" = "No leftovers";
+"foreign.owner" = "unexpected owner";
+"foreign.unreadable" = "unreadable";
+"foreign.unknownUser" = "unknown contents, may hold your own settings";
+"foreign.unknown" = "unknown contents";
+"foreign.notFile" = "not a regular file";
+
+/* Connection Test */
+"test.title" = "Connection Test";
+"test.intro" = "Checks that this Mac can reach one of your Tailscale devices while Mullvad is connected. The device is only used for this test. Enable and Disable always apply to your whole tailnet.";
+"test.deviceLabel" = "Device:";
+"test.device" = "Test device";
+"test.loadingDevices" = "Loading devices…";
+"test.devicesUnavailable" = "Device list unavailable — use Advanced";
+"test.noDevices" = "No other devices — use Advanced";
+"test.chooseDevice" = "Choose a device…";
+"test.customTarget" = "Custom target (see Advanced)";
+"test.unnamed" = "(unnamed)";
+"test.deviceItem" = "%@ — %@";
+"test.deviceItemOffline" = "%@ — %@ (offline)";
+"test.run" = "Test Connection";
+"test.advanced" = "Advanced";
+"test.advancedHint" = "Filled in when you choose a device. Edit to test another target.";
+"test.ip" = "IPv4 address:";
+"test.name" = "MagicDNS name:";
+"test.namePlaceholder" = "device-name";
+"test.port" = "TCP port:";
+"test.invalidIP" = "Enter a Tailscale IPv4 address (100.64.0.0 – 100.127.255.255), or leave it empty.";
+"test.invalidName" = "The MagicDNS name can only contain letters, digits and hyphens.";
+"test.invalidPort" = "Enter a port number from 1 to 65535.";
+"test.none" = "No test run yet.";
+"test.running" = "Testing…";
+"test.staleTarget" = "The test device changed since the last test. Click Test Connection to check it.";
+"test.staleState" = "TailBridge’s status changed since the last test. Click Test Connection to check again.";
+"test.partial" = "Partly tested";
+"test.collapsedStale" = "Results out of date (tested %@) — run the test again";
+"test.summary" = "%ld passed · %ld failed · %ld inconclusive · %ld not tested — %@";
+"test.disclaimer" = "A passing test shows that the connection works. It doesn’t prove there are no DNS leaks or that your VPN is fully secure.";
+"test.leakFound" = "Some traffic left without Mullvad. Check Mullvad’s connection before relying on it.";
+"test.notActive" = "TailBridge isn’t confirmed as on, so Mullvad may block ping and TCP to your devices.";
+"test.pickDevice" = "Choose a device to test reaching it over Tailscale.";
+"test.someFailed" = "Some checks failed. Make sure the device is online, then try again. Details are in the log.";
+"test.someInconclusive" = "Some results are inconclusive. They don’t show that traffic is protected, or that it leaks. Details are in the log.";
+
+/* Check names and results */
+"verdict.pass" = "Passed";
+"verdict.fail" = "Failed";
+"verdict.leak" = "Leak";
+"verdict.unavailable" = "Unavailable";
+"verdict.notTested" = "Not tested";
+"verdict.info" = "Info";
+"verdict.inconclusive" = "Inconclusive";
+"check.public" = "Public %@ goes through Mullvad";
+"check.viaMullvad" = "Through Mullvad";
+"check.outsideMullvad" = "%@ traffic leaves outside Mullvad";
+"check.noConnectivity" = "No %@ connection. This doesn’t show that %@ is blocked or protected, or that it leaks.";
+"check.otherVersion" = "The connection didn’t use %@, so this doesn’t show where %@ traffic goes.";
+"check.unrecognized" = "Unrecognized or incomplete response. This doesn’t show that traffic is protected, or that it leaks.";
+"check.dnsLeak" = "DNS leak test";
+"check.dnsLeakDetail" = "Not checked by TailBridge. Use dnsleaktest.com (Extended test, browser secure DNS off) and confirm every server belongs to Mullvad.";
+"check.magicSystem" = "MagicDNS name (macOS)";
+"check.magicDirect" = "MagicDNS name (direct)";
+"check.needName" = "Needs a device name";
+"check.needPeer" = "Needs a device";
+"check.nameTimedOut" = "%@: timed out";
+"check.noTailscaleAddress" = "%@: no Tailscale address";
+"check.noAnswer" = "No answer";
+"check.ping" = "Ping";
+"check.replyFrom" = "Reply from %@";
+"check.noReply" = "No reply";
+"check.tcp" = "TCP port %ld";
+"check.tcpConnected" = "Connected (no login attempted), then closed";
+"check.timedOut" = "Timed out";
+"check.waiting" = "Waiting: %@";
+"check.path" = "Tailscale route";
+"check.pathDerp" = "Through a DERP relay (%@); a direct connection wasn’t confirmed";
+"check.pathDirect" = "Direct (UDP)";
+"check.noPong" = "No reply";
+"check.commandFailed" = "The command failed or its output was incomplete, so this isn’t counted as passed.";
+"check.tsmp" = "Tailscale ping (TSMP)";
+"check.tsmpDetail" = "Tests Tailscale itself, not the firewall exception";
+"check.failover" = "Kill switch, sleep, network change";
+"check.failoverDetail" = "Needs manual testing; not run automatically";
+
+/* Enable and Disable */
+"enable.needHelper" = "Install the helper under Administration first. Its monitor must be running before TailBridge can add the exception.";
+"enable.needMullvad" = "Mullvad isn’t connected. Connect it in the Mullvad app, then click Enable.";
+"enable.needTailscale" = "Tailscale isn’t running, or its network interface wasn’t found. Connect Tailscale, then click Enable.";
+"enable.restartTailscale" = "One more step: quit Tailscale from its menu, open it again and connect, then click Enable again.";
+"enable.envFailed" = "Couldn’t update the Tailscale setting file. See the log for details.";
+"enable.invalidData" = "Tailscale reported unexpected values, so nothing was changed. See the log.";
+"enable.done" = "TailBridge is on. Run a connection test to confirm.";
+"enable.failed" = "TailBridge couldn’t be enabled. The log shows what the helper did and rolled back.";
+"disable.done" = "TailBridge is off. The exception and resolver were removed and verified.";
+"disable.partial" = "TailBridge’s changes were removed. Some unrecognized files or rules were left in place — see the log.";
+"disable.failed" = "Removal is incomplete. The helper keeps retrying; see the log and docs/OPERATIONS.md.";
+"disable.unknown" = "The result couldn’t be confirmed. Click Refresh and check Technical Details.";
+"disable.noHelper" = "The helper isn’t installed, so system changes (firewall, resolver) couldn’t be removed. See docs/OPERATIONS.md.";
+"notice.cancelled" = "Cancelled. Nothing was changed.";
+"notice.unconfirmed" = "The state after “%@” couldn’t be confirmed because the helper’s monitor isn’t reporting.";
+"notice.problemsAfter" = "The helper reported problems after “%@”. See the log for details.";
+
+/* Administrator prompts (shown in the macOS password dialog) */
+"prompt.install" = "TailBridge wants to install its root helper (SHA-256 %@…) and monitor. Network settings won’t change.";
+"prompt.uninstall" = "TailBridge wants to remove its firewall exception, resolver, monitor and helper. Mullvad stays as it is.";
+"prompt.enable" = "TailBridge wants to add 4 firewall rules (com.apple/tailbridge) for %@ and %@ only, plus a resolver for %@. Mullvad stays as it is.";
+"prompt.disable" = "TailBridge wants to remove its firewall exception and resolver (and recognized parts of the earlier prototype). Mullvad stays as it is.";
+
+/* Administration */
+"admin.title" = "Administration";
+"admin.intro" = "The helper runs as root and keeps the firewall exception in sync with Tailscale. Installing or removing it asks for your administrator password.";
+"admin.install" = "Install Helper…";
+"admin.uninstall" = "Uninstall Helper…";
+"admin.installTask" = "Install helper";
+"admin.uninstallTask" = "Uninstall helper";
+"admin.installed" = "Helper installed.";
+"admin.installFailed" = "The helper couldn’t be installed, or the result couldn’t be confirmed. See the log.";
+"admin.uninstalled" = "Helper uninstalled.";
+"admin.uninstalledLeftovers" = "Helper uninstalled, but a file TailBridge didn’t recognize was left in place (it may hold your own settings). The log shows its path; check it and remove it yourself if it’s not needed.";
+"admin.uninstallFailed" = "Uninstalling failed or is incomplete. See the log.";
+"admin.notInstalled" = "The helper isn’t installed.";
+"admin.missingHelper" = "The helper is missing from the app bundle. Rebuild the app with ./build.sh.";
+
+/* Log and diagnostics */
+"log.title" = "TailBridge Log";
+"log.copyAll" = "Copy All";
+"log.clear" = "Clear";
+"log.privacy" = "Kept in memory only. Doesn’t include keys, environment variables or the device list.";
+"log.cancelled" = "Cancelled by the user.";
+"log.stateAfter" = "State after “%@” (monitor): anchor=%@, resolver=%@, prototype=%@, cleanup pending=%@";
+"log.envMoved" = "Tailscale setting moved to %@. It stops applying after Tailscale restarts.";
+"log.envAbsent" = "Tailscale setting: no file.";
+"log.mullvadAfter" = "Mullvad after the change: %@";
+"diag.pfCounters" = "PF rule counters need root: sudo /sbin/pfctl -a com.apple/tailbridge -vvsr";
+"diag.notCollected" = "Not collected: environment variables, keys, full Tailscale status or netmap, preferences.";

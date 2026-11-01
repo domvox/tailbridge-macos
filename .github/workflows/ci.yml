@@ -1,0 +1,150 @@
+# Builds TailBridge and runs the existing tests:
+#   ./build.sh                      Core fixture tests, presentation tests, ad-hoc signed build, BUILDINFO
+#   tests/bundle-manifest-test.sh   bundle-manifest tests (temporary directory) and BUILDINFO consistency
+# Does not install the app or the helper, does not use sudo, does not touch PF, DNS, routes or VPN settings,
+# and publishes nothing: no artifacts, no releases, no caches, no secrets.
+# A green run is a build signal on GitHub's image only. It is not a support claim for that macOS version;
+# the only tested configuration is listed in README.md.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-and-test:
+    name: Build and test
+    # `xcode-27` is listed for the standard arm64 macOS runner (public and private repositories) in
+    # https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+    # GitHub announced it as generally available on 2026-10-15 (macOS 27, Xcode 27, arm64 only):
+    # https://github.blog/changelog/2026-10-15-xcode-27-runner-image-generally-available/
+    # The runner-images inventory (images/macos/xcode-27-arm64-Readme.md) listed Xcode 27.2 as a release
+    # candidate on 2026-11-01. Closest hosted match to the tested setup (macOS 27.2 arm64, Xcode 27.2).
+    runs-on: xcode-27
+    timeout-minutes: 30
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+      # Shell functions for the before/after checks, loaded with eval in those steps. Read-only.
+      # TB_CHECK_ROOT is empty on GitHub; it exists only so the checks can be tested against a fake root.
+      CHECK_SCRIPT: |
+        R="${TB_CHECK_ROOT:-}"
+        install_paths() {
+          printf '%s\n' "$R/Applications/TailBridge.app" \
+            "$R/Library/PrivilegedHelperTools/com.tailbridge.helper" \
+            "$R/Library/LaunchDaemons/com.tailbridge.helper.plist" \
+            "$R/Library/Application Support/TailBridge" \
+            "$R/Library/Logs/TailBridge-helper.log" \
+            "$HOME/Library/Application Support/TailBridge" \
+            "$HOME/Library/Preferences/local.tailbridge.app.plist" \
+            "$HOME/Library/Containers/io.tailscale.ipn.macos.network-extension/Data/tailscaled-env.txt"
+        }
+        # "absent" only when lstat fails with errno ENOENT; any other error (permissions, TCC, ENOTDIR)
+        # fails the check. Uses the errno, not the error text, so a path cannot fake the result.
+        exists_state() {
+          local rc=0
+          /usr/bin/perl -e 'exit 0 if lstat($ARGV[0]); exit($!{ENOENT} ? 3 : 4)' "$1" || rc=$?
+          case $rc in
+            0) echo present ;;
+            3) echo absent ;;
+            *) echo "::error::cannot check $1 (lstat failed, not ENOENT)" >&2; return 1 ;;
+          esac
+        }
+        # A fresh runner has no TailBridge install location and no loaded helper job; anything else fails.
+        require_absent() {
+          local p st rc bad=0
+          while IFS= read -r p; do
+            st=$(exists_state "$p") || { bad=1; continue; }
+            if [ "$st" != absent ]; then echo "::error::TailBridge location present: $p"; bad=1; fi
+          done < <(install_paths)
+          if [ -z "$R" ]; then
+            rc=0; launchctl print system/com.tailbridge.helper >/dev/null 2>&1 || rc=$?
+            case $rc in
+              113) ;;  # service not found
+              0) echo "::error::launchd job com.tailbridge.helper is loaded"; bad=1 ;;
+              *) echo "::error::launchctl print failed with $rc"; bad=1 ;;
+            esac
+          fi
+          return "$bad"
+        }
+        # Deterministic listing of /etc/resolver: mode, owner, size and SHA-256 of every entry.
+        # Only a plain directory of regular files is supported. A symlinked or non-directory /etc/resolver,
+        # or any entry that is not a regular file (symlink, subdirectory, other), fails the check, as does
+        # anything that cannot be read. Every command is checked on its own.
+        resolver_snapshot() {
+          local d="$R/etc/resolver" f h m st
+          st=$(exists_state "$d") || return 1
+          if [ "$st" = absent ]; then echo "absent"; return 0; fi
+          if [ -L "$d" ] || [ ! -d "$d" ]; then
+            echo "::error::$d is a symlink or not a directory; not supported" >&2; return 1
+          fi
+          if [ ! -r "$d" ] || [ ! -x "$d" ]; then echo "::error::cannot read $d" >&2; return 1; fi
+          m=$(stat -f '%Sp %Su:%Sg' "$d") || return 1
+          echo "dir $m"
+          find "$d" -mindepth 1 -print0 | LC_ALL=C sort -z | while IFS= read -r -d '' f; do
+            if [ -L "$f" ] || [ ! -f "$f" ]; then
+              echo "::error::unsupported entry in $d (only regular files are supported): ${f#"$d"/}" >&2; return 1
+            fi
+            m=$(stat -f '%Sp %Su:%Sg %z' "$f") || return 1
+            h=$(shasum -a 256 < "$f") || { echo "::error::cannot read $f" >&2; return 1; }
+            h=${h%% *}
+            [[ $h =~ ^[0-9a-f]{64}$ ]] || { echo "::error::bad checksum for $f" >&2; return 1; }
+            echo "file $m $h ${f#"$d"/}"
+          done
+        }
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Show toolchain
+        run: |
+          test -d "$DEVELOPER_DIR" || { echo "::error::Xcode not found at $DEVELOPER_DIR"; exit 1; }
+          sw_vers
+          uname -m
+          xcrun --find swiftc
+          xcrun swiftc --version
+
+      - name: Check that TailBridge is not installed (before tests)
+        run: |
+          eval "$CHECK_SCRIPT"
+          require_absent
+          resolver_snapshot > "$RUNNER_TEMP/resolver-before.txt"
+          cat "$RUNNER_TEMP/resolver-before.txt"
+
+      - name: Build and run Core and presentation tests (build.sh)
+        run: ./build.sh
+
+      - name: Run bundle-manifest tests
+        run: |
+          # A missing required test is a failure, never a silent skip.
+          test -f tests/bundle-manifest-test.sh || { echo "::error::tests/bundle-manifest-test.sh not found"; exit 1; }
+          /bin/bash tests/bundle-manifest-test.sh
+
+      - name: Check that TailBridge is still not installed (after tests)
+        if: always()
+        run: |
+          eval "$CHECK_SCRIPT"
+          test -f "$RUNNER_TEMP/resolver-before.txt" || { echo "::error::no /etc/resolver listing from before the tests"; exit 1; }
+          require_absent
+          resolver_snapshot > "$RUNNER_TEMP/resolver-after.txt"
+          if ! diff -u "$RUNNER_TEMP/resolver-before.txt" "$RUNNER_TEMP/resolver-after.txt"; then
+            echo "::error::/etc/resolver changed during CI"; exit 1
+          fi
+          # Scope of this check: the listed install locations are absent and /etc/resolver entries are unchanged.
+          # PF rules are not covered: reading them needs root, and this workflow does not use sudo.
+          echo "No TailBridge install location exists. /etc/resolver (absent, or a plain directory of regular files) is unchanged: names, modes, owners, sizes and SHA-256 of contents."
+          echo "PF rules were not checked (reading them needs root)."

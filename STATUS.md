@@ -1,0 +1,16 @@
+# Stan i przekazanie pracy — aktualizacja 2026-11-01 (czysty snapshot źródeł)
+
+Zapis dotyczy rozwojowego buildu z tym samym kodem aplikacji i pomocnika co ten snapshot. Nowe repo ma osobną, czystą historię i nie zawiera wcześniejszych commitów ani prywatnych raportów.
+
+## Stan repozytorium i zamknięcie weryfikacji, 2026-11-01
+
+- App 1.1.0 Experimental, build 2. Apache-2.0, podpis wyłącznie ad hoc, bez Developer ID i notaryzacji. Zakres proponowanej publikacji: tylko kod jako Experimental do review, bez tagu, binarki ani rekomendacji do zastosowań wrażliwych.
+- Zapisany przed publikacją czysty build i CI: Core 445, prezentacja 1127, manifest 14/14, soak 10 000. Nie powtarzano tych testów przy tej aktualizacji dokumentacji. BUILDINFO identyfikował testowany rozwojowy commit z `uncommitted_changes=no`. Nowy initial commit wymaga własnego czystego builda; brak publicznego przebiegu CI.
+- Czysta aplikacja została skopiowana do `/Applications`, a zgodny pomocnik zainstalowany standardową ścieżką. SHA-256 pomocnika: `a5c599c95a95882d239df33005cc736ac6e94ddff93d1e8e255a2aa70eb2f661`. Obserwowano kilka cykli stanu, nie pełną długotrwałą stabilność.
+- Nowy pomocnik raportował włączony PF, oczekiwaną kolejność anchora, dokładne własne reguły i resolver, bez problemów i oczekującego czyszczenia. Niezależny odczyt PF wykonano przed instalacją tego pomocnika; nie jest to jeden wspólny pomiar.
+- IPv4: HTTP 200 i ścisłe `mullvad_exit_ip=true`. IPv6: Unavailable, brak użytecznej globalnej łączności; nie jest to Passed ochrony.
+- Jeden kontrolowany IPv4 DNS query/response skorelowano na loopback i wewnątrz tunelu Mullvad. W tej próbce nie zarejestrowano jawnego portu 53 na aktywnym interfejsie fizycznym; zrzuty miały zero dropów jądra. Nie dowodzi to zachowania wszystkich DNS/protokołów ani awarii.
+- Lockdown: automatyczne Inconclusive pozostaje. Harness porównał zegary względne z osobnych procesów. Ręczna, ograniczona obserwacja: próba IPv4 HTTPS do jednego przypiętego endpointu dała curl 7 / HTTP 000 i brak zakończonych połączeń TCP, przy odczytach Disconnected/Lockdown on przed i po próbie. Ten sam endpoint przed i po ponownym połączeniu dał HTTP 200 i strict Mullvad true. Lokalna kolejność IPC potwierdza zakończenie próby i odczytu stanu przed żądaniem Connect; nie podajemy precyzyjnego odstępu między procesami. Odczyty stanów nie były ciągłym monitoringiem, a capture DNS nie obserwował HTTPS.
+- Końcowy niezależny odczyt: Connected, Lockdown off, zgodny hash i świeży stan pomocnika. Własne capture i guard zakończone. Podczas zablokowanej próby nie zaobserwowano odpowiedzi HTTP z rzeczywistym IP. To nie jest test rzeczywistej awarii tunelu ani pełna gwarancja fail-closed.
+- NADAL NIESPRAWDZONE: rzeczywista awaria tunelu, IPv6 protection, sleep/network change/reboot, wszystkie aplikacje/protokoły/DoH/DoT, długotrwała stabilność, pełny Enable/Disable/uninstall/rollback tego pomocnika, drugi Mac, pobrana kopia z kwarantanną. Beta i niezależny ludzki review pomocnika nie są zaliczone.
+- Repo publiczne: https://github.com/domvox/tailbridge-macos. PVR włączono i zweryfikowano przycisk zgłoszenia; link jest w SECURITY.md. Nowa historia zawiera wyłącznie publiczny handle i zweryfikowany GitHub noreply. Prywatne raporty, raw logi, PCAP i dawna historia nie są częścią snapshotu.
